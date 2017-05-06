@@ -8,13 +8,14 @@ services:
       MYSQL_DATABASE: drupal
       MYSQL_USER: drupal
       MYSQL_PASSWORD: drupal
-#    volumes:
+    volumes:
+      - mysql:/var/lib/mysql # persist data
 #      - ./mariadb-init:/docker-entrypoint-initdb.d # Place init .sql file(s) here.
 #      - /path/to/mariadb/data/on/host:/var/lib/mysql # I want to manage volumes manually.
 
   php:
 # 1. Images with vanilla Drupal – wodby/drupal:[DRUPAL_VERSION]-[PHP_VERSION]-[STABILITY_TAG].
-    image: wodby/drupal:8-7.1-2.1.2
+#    image: wodby/drupal:8-7.1-2.1.2
 #    image: wodby/drupal:8-7.0-2.1.2
 #    image: wodby/drupal:7-7.1-2.1.2
 #    image: wodby/drupal:7-7.0-2.1.2
@@ -22,7 +23,7 @@ services:
 #    image: wodby/drupal:6-5.6-2.1.2
 #    image: wodby/drupal:6-5.3-2.1.2
 # 2. Images without Drupal – wodby/drupal-php:[PHP_VERSION]-[STABILITY_TAG].
-#    image: wodby/drupal-php:7.1-2.1.0
+    image: wodby/drupal-php:7.1-2.1.0
 #    image: wodby/drupal-php:7.0-2.1.0
 #    image: wodby/drupal-php:5.6-2.1.0
 #    image: wodby/drupal-php:5.3-2.1.0
@@ -38,7 +39,7 @@ services:
       # PHP_XDEBUG_REMOTE_CONNECT_BACK: 0         # This is needed to respect remote.host setting bellow
       # PHP_XDEBUG_REMOTE_HOST: "10.254.254.254"  # You will also need to 'sudo ifconfig lo0 alias 10.254.254.254'
     volumes:
-      - codebase:/var/www/html
+      - ./:/var/www/html
 #      - docker-sync-unison:/var/www/html # Docker-sync for macOS users
 
   nginx:
@@ -54,7 +55,7 @@ services:
       NGINX_BACKEND_HOST: php
       NGINX_SERVER_ROOT: /var/www/html/web
     volumes:
-      - codebase:/var/www/html
+      - ./:/var/www/html
 #      - docker-sync-unison:/var/www/html # Docker-sync for macOS users
     labels:
       - 'traefik.backend=nginx'
@@ -143,4 +144,4 @@ services:
 #    external: true
 
 volumes:
-  codebase:
+  mysql:
